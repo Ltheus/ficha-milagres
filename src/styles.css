@@ -1,5 +1,31 @@
+@font-face {
+  font-family: 'ITC Avant Garde Std';
+  src: url('/fonts/ITCAvantGardeStd-Bold.ttf');
+  font-weight: bold;
+  font-style: normal;
+}
+
+:root {
+  --bg-color: #f1f1f1;
+  --text-color: #1a1a1a;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  font-family: 'ITC Avant Garde Std', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+
+  border: 10px solid var(--text-color);
 }
