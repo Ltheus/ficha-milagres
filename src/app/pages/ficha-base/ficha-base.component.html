@@ -1,0 +1,231 @@
+<form [formGroup]="fichaBaseForm">
+
+  <!-- ======================== TEMPLATES REUTILIZÁVEIS ======================== -->
+  <ng-template #atualMaximoTpl let-groupName="groupName" let-titulo="titulo">
+    <fieldset [formGroupName]="groupName">
+      <legend>{{titulo}}</legend>
+      <label>Máximo: <input type="number" formControlName="maximo"></label>
+      <label>Atual: <input type="number" formControlName="atual"></label>
+    </fieldset>
+  </ng-template>
+
+  <ng-template #itemTpl let-groupName="groupName" let-titulo="titulo">
+    <fieldset [formGroupName]="groupName">
+      <legend>{{titulo}}</legend>
+      <label>Nome: <input formControlName="nome"></label>
+      <label>Preço: <input type="number" formControlName="preco"></label>
+      <label>Carga: <input type="number" formControlName="carga"></label>
+      <label>Descrição: <input formControlName="descricao"></label>
+      <label>Material: <input formControlName="material"></label>
+      <label>Quantidade: <input type="number" formControlName="quantidade"></label>
+      <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'recarga', titulo: 'Recarga' }"></ng-container>
+    </fieldset>
+  </ng-template>
+
+  <ng-template #atributoPericiaTpl let-groupName="groupName" let-titulo="titulo" let-controlPath="controlPath">
+    <fieldset [formGroupName]="groupName">
+      <legend>{{titulo}}</legend>
+      <label>Valor: <input type="number" formControlName="valor"></label>
+      
+      <div formArrayName="bonus">
+        <span>Bônus:</span>
+        @for(b of getBonusArray($any(fichaBaseForm.get(controlPath))).controls; track b; let j = $index) {
+          <input type="number" [formControlName]="j">
+        }
+      </div>
+
+      <fieldset formGroupName="vantagemDesvantagem">
+        <legend>Vantagem/Desvantagem</legend>
+        <label><input type="checkbox" formControlName="vantagem"> Vantagem</label>
+        <label><input type="checkbox" formControlName="desvantagem"> Desvantagem</label>
+      </fieldset>
+    </fieldset>
+  </ng-template>
+
+
+  <!-- ======================== ESTRUTURA DA FICHA ======================== -->
+
+  <!-- Caracteristicas -->
+  <fieldset formGroupName="caracteristicas">
+    <legend>Características</legend>
+    <label>Nome: <input formControlName="nome"></label>
+    <label>Espécie: <input formControlName="especie"></label>
+    <label>Linhagem: <input formControlName="linhagem"></label>
+    <label>Arquétipo: <input formControlName="arquetipo"></label>
+    <label>Especialização: <input formControlName="especializacao"></label>
+    <div formArrayName="treinamentos">
+      <h4>Treinamentos</h4>
+      @for(treinamento of formTreinamentos.controls; track treinamento; let i = $index) {
+        <label>Treinamento {{i + 1}}: <input [formControlName]="i"></label>
+      }
+    </div>
+  </fieldset>
+
+  <!-- Estatisticas -->
+  <fieldset formGroupName="estatisticas">
+    <legend>Estatísticas</legend>
+    <label>Nível: <input type="number" formControlName="nivel"></label>
+    <label>XP: <input type="number" formControlName="xp"></label>
+    <label>Estatura: <input formControlName="estatura"></label>
+    <label>Iniciativa: <input type="number" formControlName="iniciativa"></label>
+    <label>Turnos: <input type="number" formControlName="turnos"></label>
+    <label>Status: <input formControlName="status"></label>
+    <label>CA: <input type="number" formControlName="ca"></label>
+    <label>Deslocamento: <input type="number" formControlName="deslocamento"></label>
+    <label>Bônus Força: <input formControlName="bonusForca"></label>
+    <label>Experiência vs Morte: <input type="number" formControlName="experienciaVsMorte"></label>
+    
+    <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'vida', titulo: 'Vida' }"></ng-container>
+    <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'mana', titulo: 'Mana' }"></ng-container>
+    <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'sanidade', titulo: 'Sanidade' }"></ng-container>
+    <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'pontosAcao', titulo: 'Pontos de Ação' }"></ng-container>
+    <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'pontosReacao', titulo: 'Pontos de Reação' }"></ng-container>
+    <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'espacosMagia', titulo: 'Espaços de Magia' }"></ng-container>
+  </fieldset>
+
+  <!-- Atributos -->
+  <fieldset formGroupName="atributos">
+    <legend>Atributos</legend>
+    <fieldset formGroupName="fisicos">
+      <legend>Físicos</legend>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'agilidade', titulo: 'Agilidade', controlPath: 'atributos.fisicos.agilidade' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'forca', titulo: 'Força', controlPath: 'atributos.fisicos.forca' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'tamanho', titulo: 'Tamanho', controlPath: 'atributos.fisicos.tamanho' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'vigor', titulo: 'Vigor', controlPath: 'atributos.fisicos.vigor' }"></ng-container>
+    </fieldset>
+    <fieldset formGroupName="mentais">
+      <legend>Mentais</legend>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'carisma', titulo: 'Carisma', controlPath: 'atributos.mentais.carisma' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'destreza', titulo: 'Destreza', controlPath: 'atributos.mentais.destreza' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'inteligencia', titulo: 'Inteligência', controlPath: 'atributos.mentais.inteligencia' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'vontade', titulo: 'Vontade', controlPath: 'atributos.mentais.vontade' }"></ng-container>
+    </fieldset>
+  </fieldset>
+
+  <!-- Pericias -->
+  <fieldset formGroupName="pericias">
+    <legend>Perícias</legend>
+    <fieldset formGroupName="fisicas">
+      <legend>Físicas</legend>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'acrobacia', titulo: 'Acrobacia', controlPath: 'pericias.fisicas.acrobacia' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'atletismo', titulo: 'Atletismo', controlPath: 'pericias.fisicas.atletismo' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'combateADistancia', titulo: 'Combate à Distância', controlPath: 'pericias.fisicas.combateADistancia' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'combateACorpoACorpo', titulo: 'Combate Corpo a Corpo', controlPath: 'pericias.fisicas.combateACorpoACorpo' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'percepcao', titulo: 'Percepção', controlPath: 'pericias.fisicas.percepcao' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'pilotagem', titulo: 'Pilotagem', controlPath: 'pericias.fisicas.pilotagem' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'prestidigitacao', titulo: 'Prestidigitação', controlPath: 'pericias.fisicas.prestidigitacao' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'sobrevivencia', titulo: 'Sobrevivência', controlPath: 'pericias.fisicas.sobrevivencia' }"></ng-container>
+    </fieldset>
+    <fieldset formGroupName="mentais">
+      <legend>Mentais</legend>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'artes', titulo: 'Artes', controlPath: 'pericias.mentais.artes' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'enganacao', titulo: 'Enganação', controlPath: 'pericias.mentais.enganacao' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'furtividade', titulo: 'Furtividade', controlPath: 'pericias.mentais.furtividade' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'historia', titulo: 'História', controlPath: 'pericias.mentais.historia' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'intuicao', titulo: 'Intuição', controlPath: 'pericias.mentais.intuicao' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'investigacao', titulo: 'Investigação', controlPath: 'pericias.mentais.investigacao' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'medicina', titulo: 'Medicina', controlPath: 'pericias.mentais.medicina' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'primeirosSocorros', titulo: 'Primeiros Socorros', controlPath: 'pericias.mentais.primeirosSocorros' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'psicologia', titulo: 'Psicologia', controlPath: 'pericias.mentais.psicologia' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'tecnologia', titulo: 'Tecnologia', controlPath: 'pericias.mentais.tecnologia' }"></ng-container>
+    </fieldset>
+    <fieldset formGroupName="magicas">
+      <legend>Mágicas</legend>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'arcanismo', titulo: 'Arcanismo', controlPath: 'pericias.magicas.arcanismo' }"></ng-container>
+      <ng-container *ngTemplateOutlet="atributoPericiaTpl; context: { groupName: 'ocultismo', titulo: 'Ocultismo', controlPath: 'pericias.magicas.ocultismo' }"></ng-container>
+    </fieldset>
+  </fieldset>
+
+  <!-- Defesas -->
+  <fieldset formGroupName="defesas">
+    <legend>Defesas</legend>
+    <fieldset formGroupName="fisicas">
+      <legend>Físicas</legend>
+      <label>Balístico: <input type="number" formControlName="balistico"></label>
+      <label>Concussão: <input type="number" formControlName="concussao"></label>
+      <label>Cortante: <input type="number" formControlName="cortante"></label>
+      <label>Perfurante: <input type="number" formControlName="perfurante"></label>
+    </fieldset>
+    <fieldset formGroupName="elementais">
+      <legend>Elementais</legend>
+      <label>Ácido: <input type="number" formControlName="acido"></label>
+      <label>Água: <input type="number" formControlName="agua"></label>
+      <label>Ar: <input type="number" formControlName="ar"></label>
+      <label>Elétrico: <input type="number" formControlName="eletrico"></label>
+      <label>Energia: <input type="number" formControlName="energia"></label>
+      <label>Fogo: <input type="number" formControlName="fogo"></label>
+      <label>Gelo: <input type="number" formControlName="gelo"></label>
+      <label>Luz: <input type="number" formControlName="luz"></label>
+      <label>Sangue: <input type="number" formControlName="sangue"></label>
+      <label>Sombra: <input type="number" formControlName="sombra"></label>
+      <label>Terra: <input type="number" formControlName="terra"></label>
+      <label>Veneno: <input type="number" formControlName="veneno"></label>
+    </fieldset>
+  </fieldset>
+
+  <!-- Ataques (ARRAY) -->
+  <fieldset formArrayName="ataques">
+    <legend>Ataques</legend>
+    @for(ataque of formAtaques.controls; track ataque; let i = $index) {
+      <fieldset [formGroupName]="i">
+        <legend>Ataque {{i + 1}}</legend>
+        <label>Nome: <input formControlName="nome"></label>
+        <label>Teste: <input formControlName="teste"></label>
+        <label>Dificuldade: <input type="number" formControlName="classeDificuldade"></label>
+        <label>Dano: <input formControlName="dano"></label>
+        <label>Alcance: <input formControlName="alcance"></label>
+        <label>Defeito: <input type="number" formControlName="defeito"></label>
+        <label>Recuo: <input type="number" formControlName="recuo"></label>
+        <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'recarga', titulo: 'Recarga' }"></ng-container>
+      </fieldset>
+    }
+  </fieldset>
+
+  <!-- Sobre -->
+  <fieldset formGroupName="sobre">
+    <legend>Sobre</legend>
+    <label>Prestígio: <input type="number" formControlName="prestigio"></label>
+    <label>Afiliação: <input formControlName="afiliacao"></label>
+    <label>Patente: <input formControlName="patente"></label>
+    <label>Descrição: <input formControlName="descricao"></label>
+    <label>Traumas: <input formControlName="traumas"></label>
+  </fieldset>
+
+  <!-- Habilidades (ARRAY) -->
+  <fieldset formArrayName="habilidades">
+    <legend>Habilidades</legend>
+    @for(habilidade of formHabilidades.controls; track habilidade; let i = $index) {
+      <fieldset [formGroupName]="i">
+        <legend>Habilidade {{i + 1}}</legend>
+        <label>Nome: <input formControlName="nome"></label>
+        <label>Descrição: <input formControlName="descricao"></label>
+      </fieldset>
+    }
+  </fieldset>
+
+  <!-- Inventário -->
+  <fieldset formGroupName="inventario">
+    <legend>Inventário</legend>
+    <label>Créditos: <input type="number" formControlName="creditos"></label>
+    <ng-container *ngTemplateOutlet="atualMaximoTpl; context: { groupName: 'carga', titulo: 'Carga Máx/Atual' }"></ng-container>
+
+    <fieldset formArrayName="itens">
+      <legend>Itens</legend>
+      @for(item of formItens.controls; track item; let i = $index) {
+        <ng-container *ngTemplateOutlet="itemTpl; context: { groupName: i.toString(), titulo: 'Item ' + (i + 1) }"></ng-container>
+      }
+    </fieldset>
+  </fieldset>
+
+  <!-- Vestuário -->
+  <fieldset formGroupName="vestuario">
+    <legend>Vestuário</legend>
+    <ng-container *ngTemplateOutlet="itemTpl; context: { groupName: 'capacete', titulo: 'Capacete' }"></ng-container>
+    <ng-container *ngTemplateOutlet="itemTpl; context: { groupName: 'manto', titulo: 'Manto' }"></ng-container>
+    <ng-container *ngTemplateOutlet="itemTpl; context: { groupName: 'peitoral', titulo: 'Peitoral' }"></ng-container>
+    <ng-container *ngTemplateOutlet="itemTpl; context: { groupName: 'braceletes', titulo: 'Braceletes' }"></ng-container>
+    <ng-container *ngTemplateOutlet="itemTpl; context: { groupName: 'calcas', titulo: 'Calças' }"></ng-container>
+    <ng-container *ngTemplateOutlet="itemTpl; context: { groupName: 'botas', titulo: 'Botas' }"></ng-container>
+  </fieldset>
+
+</form>
