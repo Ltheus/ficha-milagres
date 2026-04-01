@@ -4,5 +4,5 @@ export class Caracteristicas {
   linhagem: string = '';
   arquetipo: string = '';
   especializacao: string = '';
-  treinamentos: string[] = [];
+  treinamentos: string = '';
 }
